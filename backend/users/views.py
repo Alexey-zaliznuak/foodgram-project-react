@@ -10,18 +10,24 @@ from rest_framework.decorators import action
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import filters
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import pagination
+from rest_framework import mixins
+from rest_framework import viewsets
+from core import StandardResultsSetPagination
 
 
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'limit'
-    max_page_size = 1000
+class UserMixin(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    pass
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(UserMixin):
     queryset = User.objects.all()
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter, )
@@ -34,7 +40,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             return PostUserSerializer # has 'password' field
 
-        return UserSerializer
+        return UserSerializer # has 'is_subscribed' field
 
     @action(
         methods=['PATCH', 'GET'],
@@ -51,15 +57,18 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return self.retrieve(request, request.user.username)
 
-    @action(["post"], detail=False, queryset=None, serializer_class=ChangePasswordSerializer)
+    @action(["post"], detail=False, queryset=None)
     def set_password(self, request):
         user = self.request.user
-        serializer = ChangePasswordSerializer
+        serializer = ChangePasswordSerializer(data=request.data)
 
         if serializer.is_valid():
             # Check old password
-            if not user.check_password(serializer.data.get("old_password")):
-                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+            if not user.check_password(serializer.data.get("current_password")):
+                return Response(
+                    {"current_password": ["Wrong password."]},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
             # set_password also hashes the password that the user will get
             user.set_password(serializer.data.get("new_password"))
@@ -74,4 +83,3 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(response)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-

@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_yasg',
     'djoser',
+    'colorfield',
     'api.apps.ApiConfig',
     'users.apps.UsersConfig',
     'food.apps.FoodConfig',
@@ -77,7 +78,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000'
 ]
 
-# Use sql in debug mode and postgers in production
+# Use sql in debug mode and postgers in production(on server)
 DATABASES = {
     'default': {
         'debug': {
@@ -96,6 +97,9 @@ DATABASES = {
 }
 
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 3000
+
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
@@ -103,8 +107,18 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+}
+
+SWAGGER_SETTINGS = {
+    'sheme': 'bearer',
+    "bearerFormat":' JWT',
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
 }
 
 
@@ -134,8 +148,6 @@ USE_L10N = True
 
 USE_TZ = env('USE_TZ') == 'True'
 
-
-STATIC_URL = '/static/'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'collected_static'

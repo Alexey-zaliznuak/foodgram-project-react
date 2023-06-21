@@ -7,13 +7,19 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from api.views import(
+   IngredientViewSet,
+   TagViewSet
+)
+
 router = Router()
+router.register('ingredients', IngredientViewSet, basename='ingredients')
+router.register('tags', TagViewSet, basename='tags')
 
 urlpatterns = [
    path('', include(router.urls)),
    path('', include('users.urls')),
-   # path('', include('djoser.urls')),
-   path('', include('djoser.urls.authtoken')),
+   path('auth/', include('djoser.urls.authtoken')),
 ]
 
 schema_view = get_schema_view(

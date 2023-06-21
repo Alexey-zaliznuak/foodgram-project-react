@@ -9,7 +9,7 @@ class User(AbstractUser):
 
     # https://code.djangoproject.com/ticket/20097
     USERNAME_FIELD = 'email'
-    AbstractUser.REQUIRED_FIELDS.remove('email')
+    AbstractUser.REQUIRED_FIELDS = ['username']
 
     def clean(self) -> None:
         if self.username == 'me':
