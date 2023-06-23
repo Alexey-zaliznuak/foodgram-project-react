@@ -22,7 +22,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(IngredientAmount)
 class IngredientAmountAdmin(admin.ModelAdmin):
-    list_display = ('ingredient', 'amount')
+    list_display = ('ingredient', 'amount',)
     list_filter = ('ingredient', 'amount')
     search_fields = ('ingredient', 'amount')
 
@@ -82,7 +82,7 @@ class SubscribeAdmin(admin.ModelAdmin):
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ('user', 'recipe')
+    list_display = ('user', 'recipe',)
     search_fields = ('user', 'recipe')
 
 

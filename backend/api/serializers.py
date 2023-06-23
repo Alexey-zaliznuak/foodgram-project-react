@@ -1,7 +1,9 @@
 import base64
 from rest_framework import serializers, validators
 from django.core.files.base import ContentFile
+from rest_framework.exceptions import ValidationError
 from users.models import User
+from django.db.models import Q, Model
 from food.models import (
     Tag,
     Recipe,
@@ -33,6 +35,41 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Tag
+
+
+class CreateFavoriteRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        read_only_fields = ('name', 'image', 'cooking_time')
+        fields = ('id', *read_only_fields)
+        model = Recipe
+
+    def validate(self, data):
+        user = self.context['request'].user
+        recipe = self.instance
+
+        if Favorite.objects.filter(Q(user=user) & Q(recipe=recipe)).exists():
+            raise ValidationError("This recipe already in favorites")
+
+        return data
+
+
+class CreateShoppingCartRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        read_only_fields = ('name', 'image', 'cooking_time')
+        fields = ('id', *read_only_fields)
+        model = Recipe
+
+    def validate(self, data):
+        user = self.context['request'].user
+        recipe = self.instance
+
+        if ShoppingCart.objects.filter(
+            Q(user=user) & Q(recipe=recipe)
+        ).exists():
+            raise ValidationError("This recipe already in shopping cart")
+
+        return data
+
 
 # class SubscribeSerializer(serializers.ModelSerializer):
 #     subscribers = serializers.SlugRelatedField(

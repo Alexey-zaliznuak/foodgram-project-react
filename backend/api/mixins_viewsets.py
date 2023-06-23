@@ -9,11 +9,16 @@ class GetViewSet(
 ):
     pass
 
-class ListCreateDeleteViewSet(
-    mixins.ListModelMixin,
+
+class CreateDestroyViewSet(
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     pass
 
+class ListCreateDeleteViewSet(
+    mixins.ListModelMixin,
+    CreateDestroyViewSet,
+):
+    pass

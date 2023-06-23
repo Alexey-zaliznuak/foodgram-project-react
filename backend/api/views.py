@@ -1,5 +1,15 @@
 from rest_framework.pagination import LimitOffsetPagination
 from users.views import StandardResultsSetPagination
+from django.http import FileResponse
+from core import make_shopping_file
+from rest_framework.decorators import action
+from rest_framework.status import (
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+)
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from django.http import FileResponse
 from food.models import (
     Tag,
     Recipe,
@@ -23,11 +33,14 @@ from .permissions import (
 from .mixins_viewsets import (
     GetViewSet,
     ListCreateDeleteViewSet,
+    CreateDestroyViewSet,
 )
 from .serializers import (
     # SubscribeSerializer,
     TagSerializer,
     IngredientSerializer,
+    CreateShoppingCartRecipeSerializer,
+    CreateFavoriteRecipeSerializer,
 )
 
 
@@ -50,13 +63,54 @@ class TagViewSet(GetViewSet):
     serializer_class = TagSerializer
 
 
+class FavoriteViewSet(viewsets.ViewSet):
+    @action(["post", "delete"], detail=True, url_path='favorite')
+    def favorite(self, request, pk):
+        user = request.user
+        recipe = get_object_or_404(Recipe, id=pk)
+
+        if request.method == "POST":
+
+            serializer = CreateFavoriteRecipeSerializer(
+                recipe, data=request.data, context={'request': request}
+            )
+            serializer.is_valid(raise_exception=True)
+
+            Favorite.objects.create(user=user, recipe=recipe)
+            return Response(data=request.data, status=HTTP_201_CREATED)
+
+        # delete favorite
+        favorite = get_object_or_404(Favorite, user=user, recipe=recipe)
+        favorite.delete()
+        return Response(data=request.data, status=HTTP_204_NO_CONTENT)
 
 
+class ShoppingCartViewSet(viewsets.ViewSet):
+    @action(["post", "delete"], detail=True, url_path='shopping_cart')
+    def shopping(self, request, pk):
+        user = request.user
+        recipe = get_object_or_404(Recipe, id=pk)
 
+        if request.method == "POST":
 
+            serializer = CreateShoppingCartRecipeSerializer(
+                recipe, data=request.data, context={'request': request}
+            )
+            serializer.is_valid(raise_exception=True)
 
+            ShoppingCart.objects.create(user=user, recipe=recipe)
+            return Response(data=request.data, status=HTTP_201_CREATED)
 
-# # Create your views here.
+        # delete recipe from shopping cart
+        recipe = get_object_or_404(ShoppingCart, user=user, recipe=recipe)
+        recipe.delete()
+        return Response(data=request.data, status=HTTP_204_NO_CONTENT)
+
+    @action(["get"], url_path='download_shopping_cart', detail=False)
+    def download(self, request):
+        cart = ShoppingCart.objects.filter(user=request.user)
+        return FileResponse(make_shopping_file(cart))
+
 # class SubscribeViewSet(ListCreateDeleteViewSet):
 #     serializer_class = SubscribeSerializer
 #     permission_classes = (IsAuthenticated,)
@@ -68,16 +122,3 @@ class TagViewSet(GetViewSet):
 
 #     def get_queryset(self):
 #         return Subscribe.objects.filter(user=self.request.user)
-
-#
-# #
-# class PurchaseList(generics.ListAPIView):
-#     serializer_class = PurchaseSerializer
-
-#     def get_queryset(self):
-#         """
-#         This view should return a list of all the purchases
-#         for the currently authenticated user.
-#         """
-#         user = self.request.user
-#         return Purchase.objects.filter(purchaser=user)

@@ -41,7 +41,10 @@ class IngredientAmount(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.ingredient} {self.amount}"
+        return (
+            f"{str(self.ingredient)} {self.amount} "
+            f"{self.ingredient.measurement_unit}"
+        )
 
 class Tag(models.Model):
     name = models.CharField('Tag for Recipes', max_length=32)
