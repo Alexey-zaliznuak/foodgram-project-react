@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, user):
         return Subscribe.objects.filter(
-            Q(user=user) & Q(subscription = self.context['request'].user.id)
+            Q(subscription=user) & Q(user = self.context['request'].user.id)
         ).exists()
 
     class Meta:
