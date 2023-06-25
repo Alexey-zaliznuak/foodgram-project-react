@@ -4,9 +4,12 @@ from django.core.management.base import BaseCommand
 from food.models import Ingredient, Tag
 
 
+# use this for load ingredients(-i) and tags(-t)
+# python manage.py load -i -t
+
+
 def loadcsv(file_name:str):
     return pd.read_csv(f'data/{file_name}.csv')
-
 
 def import_ingredients():
     data = [
