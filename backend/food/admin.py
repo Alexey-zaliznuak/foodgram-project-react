@@ -1,16 +1,9 @@
-from django.contrib.auth.models import Group
 from django.contrib import admin
+from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from food.models import (
-    Tag,
-    Recipe,
-    Favorite,
-    Subscribe,
-    Ingredient,
-    ShoppingCart,
-    IngredientAmount,
-)
+from food.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                         ShoppingCart, Subscribe, Tag)
 
 
 @admin.register(Ingredient)
@@ -44,7 +37,15 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'author_link', 'image', 'ingredients_list', 'tags_list', 'cooking_time', 'created')
+    list_display = (
+        'name',
+        'author_link',
+        'image',
+        'ingredients_list',
+        'tags_list',
+        'cooking_time',
+        'created',
+    )
     search_fields = ('name',)
 
     @admin.display(description="author")

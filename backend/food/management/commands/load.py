@@ -1,15 +1,14 @@
 import pandas as pd
 from django.core.management.base import BaseCommand
-
 from food.models import Ingredient, Tag
-
 
 # use this for load ingredients(-i) and tags(-t)
 # python manage.py load -i -t
 
 
-def loadcsv(file_name:str):
+def loadcsv(file_name: str):
     return pd.read_csv(f'data/{file_name}.csv')
+
 
 def import_ingredients():
     data = [
@@ -22,6 +21,7 @@ def import_ingredients():
     Ingredient.objects.bulk_create(data)
     print('import ingredients completed successfully')
 
+
 def import_tags():
     data = [
         Tag(
@@ -33,6 +33,7 @@ def import_tags():
     ]
     Tag.objects.bulk_create(data)
     print('import tags completed successfully')
+
 
 class Command(BaseCommand):
     def handle(self, *args, **options):

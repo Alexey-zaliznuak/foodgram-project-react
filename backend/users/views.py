@@ -1,21 +1,12 @@
-from django.shortcuts import get_object_or_404
+from core import StandardResultsSetPagination
+from rest_framework import filters, mixins, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 
 from .models import User
-from .serializers import (
-    UserSerializer,
-    PostUserSerializer,
-    ChangePasswordSerializer
-)
-from rest_framework.decorators import action
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework import filters
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import pagination
-from rest_framework import mixins
-from rest_framework import viewsets
-from core import StandardResultsSetPagination
+from .serializers import (ChangePasswordSerializer, PostUserSerializer,
+                          UserSerializer)
 
 
 class UserMixin(
@@ -38,9 +29,9 @@ class UserViewSet(UserMixin):
 
     def get_serializer_class(self):
         if self.action == 'create':
-            return PostUserSerializer # has 'password' field
+            return PostUserSerializer  # has 'password' field
 
-        return UserSerializer # has 'is_subscribed' field
+        return UserSerializer  # has 'is_subscribed' field
 
     def get_permissions(self):
         if self.action == 'create':
@@ -70,7 +61,9 @@ class UserViewSet(UserMixin):
 
         if serializer.is_valid(raise_exception=True):
             # Check old password
-            if not user.check_password(serializer.data.get("current_password")):
+            if not user.check_password(
+                serializer.data.get("current_password")
+            ):
                 return Response(
                     {"current_password": ["Wrong password."]},
                     status=status.HTTP_400_BAD_REQUEST

@@ -1,13 +1,12 @@
-from io import StringIO
-from django.core.files.base import ContentFile
 from time import time
 
+from django.core.files.base import ContentFile
 
-AMOUNT_INDEX = 0 # index of name in dict result
-UNIT_INDEX = 1 # index of measurement unit in dict result
+AMOUNT_INDEX = 0  # index of name in dict result
+UNIT_INDEX = 1  # index of measurement unit in dict result
 
 
-def cart_format(item:tuple) -> str:
+def cart_format(item: tuple) -> str:
     ingredient_name = item[0]
     amount, unit = item[1]
 
@@ -15,8 +14,9 @@ def cart_format(item:tuple) -> str:
         f"{ingredient_name}: {amount} {unit}."
     )
 
+
 def get_ingredients(cart) -> list[str]:
-    dict_result = {} # {'name'}: [amount, measurement_unit]
+    dict_result = {}  # {'name'}: [amount, measurement_unit]
     result = []
 
     for element in cart:
@@ -42,6 +42,7 @@ def get_ingredients(cart) -> list[str]:
         result.append(cart_format(res))
 
     return result
+
 
 def make_shopping_file(cart) -> ContentFile:
     text = '\n'.join(get_ingredients(cart))

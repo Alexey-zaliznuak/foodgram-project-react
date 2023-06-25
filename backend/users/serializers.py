@@ -1,10 +1,8 @@
-from django.core.exceptions import ValidationError
-from rest_framework import serializers
-from .models import User
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from food.models import Subscribe
+from rest_framework import serializers
+
+from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, user):
         return Subscribe.objects.filter(
-            Q(subscription=user) & Q(user = self.context['request'].user.id)
+            Q(subscription=user) & Q(user=self.context['request'].user.id)
         ).exists()
 
     class Meta:
@@ -25,6 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
             'is_subscribed',
         )
 
+
 class PostUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -35,6 +34,7 @@ class PostUserSerializer(serializers.ModelSerializer):
             'last_name',
             'password',
         ]
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     """

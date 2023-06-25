@@ -1,8 +1,7 @@
 from os import getenv as env
 from pathlib import Path
-from dotenv import load_dotenv
-from datetime import timedelta
 
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -114,7 +113,7 @@ REST_FRAMEWORK = {
 
 SWAGGER_SETTINGS = {
     'sheme': 'bearer',
-    "bearerFormat":' JWT',
+    "bearerFormat": 'JWT',
     'SECURITY_DEFINITIONS': {
         'Bearer': {
             'type': 'apiKey',

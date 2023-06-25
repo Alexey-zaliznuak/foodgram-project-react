@@ -1,17 +1,18 @@
-from users.models import User
-from food.models import Tag, Recipe
-from django.db.models import Q
 from django_filters import (
+    BooleanFilter,
     FilterSet,
     ModelChoiceFilter,
-    BooleanFilter,
     ModelMultipleChoiceFilter
 )
+from food.models import Recipe, Tag
+from users.models import User
 
 
 class FilterRecipe(FilterSet):
     author = ModelChoiceFilter(queryset=User.objects.all())
-    tags = ModelMultipleChoiceFilter(queryset=Tag.objects.all(), to_field_name='slug')
+    tags = ModelMultipleChoiceFilter(
+        queryset=Tag.objects.all(), to_field_name='slug'
+    )
     is_favorited = BooleanFilter("is_favorited", method="is_favorited_filter")
     is_in_shopping_cart = BooleanFilter(
         "is_in_shopping_cart", method="is_in_shopping_cart_filter"

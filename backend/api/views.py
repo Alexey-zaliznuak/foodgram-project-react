@@ -1,49 +1,27 @@
-from rest_framework.pagination import LimitOffsetPagination
-from users.views import StandardResultsSetPagination
-from django.http import FileResponse
 from api.filters import FilterRecipe
 from core import make_shopping_file
-from rest_framework.decorators import action
-from rest_framework.status import (
-    HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-)
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
 from django.http import FileResponse
+from django.shortcuts import get_object_or_404
 from food.models import (
-    Tag,
-    Recipe,
     Favorite,
-    Subscribe,
     Ingredient,
+    Recipe,
     ShoppingCart,
-    IngredientAmount,
+    Tag
 )
-from rest_framework import (
-    filters,
-    viewsets,
-)
-from rest_framework.permissions import (
-    IsAuthenticatedOrReadOnly,
-    IsAuthenticated,
-)
-from .permissions import (
-    IsAuthorOrReadOnlyPermission,
-)
-from .mixins_viewsets import (
-    # GetViewSet,
-    ListCreateDeleteViewSet,
-    CreateDestroyViewSet,
-)
+from rest_framework import filters, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
+
 from .serializers import (
-    # SubscribeSerializer,
     TagSerializer,
     RecipeSerializer,
     GetRecipeSerializer,
     IngredientSerializer,
-    CreateShoppingCartRecipeSerializer,
     CreateFavoriteRecipeSerializer,
+    CreateShoppingCartRecipeSerializer,
 )
 
 

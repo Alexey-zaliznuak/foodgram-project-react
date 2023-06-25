@@ -1,9 +1,8 @@
-from django.db import models
 from colorfield.fields import ColorField
-from users.models import User
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
-
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from users.models import User
 
 WEEK = 60 * 24 * 7
 
@@ -26,14 +25,14 @@ class Ingredient(models.Model):
             )
         ]
 
+
 class IngredientAmount(models.Model):
     ingredient = models.ForeignKey(
         Ingredient, on_delete=models.CASCADE, related_name='amounts'
     )
     amount = models.PositiveIntegerField("amount", validators=[
-            MinValueValidator(1)
-        ]
-    )
+        MinValueValidator(1),
+    ])
 
     class Meta:
         constraints = [
@@ -49,6 +48,7 @@ class IngredientAmount(models.Model):
             f"{self.ingredient.measurement_unit}"
         )
 
+
 class Tag(models.Model):
     name = models.CharField('Tag for Recipes', max_length=32)
     color = ColorField('color', default='#FF0000')
@@ -56,6 +56,7 @@ class Tag(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
 
 class Recipe(models.Model):
     author = models.ForeignKey(
@@ -71,10 +72,13 @@ class Recipe(models.Model):
     )
     text = models.TextField('description')
 
-    ingredients = models.ManyToManyField(IngredientAmount, verbose_name='ingredients')
+    ingredients = models.ManyToManyField(
+        IngredientAmount, verbose_name='ingredients'
+    )
 
     tags = models.ManyToManyField(Tag, verbose_name="tags")
-    cooking_time = models.PositiveSmallIntegerField("cooking time(minute)",
+    cooking_time = models.PositiveSmallIntegerField(
+        "cooking time(minute)",
         validators=[
             MinValueValidator(1),
             MaxValueValidator(WEEK)
@@ -91,6 +95,7 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ('-created',)
+
 
 class Subscribe(models.Model):
     user = models.ForeignKey(
@@ -113,6 +118,7 @@ class Subscribe(models.Model):
         if self.user == self.subscription:
             raise ValidationError('You cant subsrite on yourself')
 
+
 class Favorite(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="favorite_recipes"
@@ -131,6 +137,7 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f"{self.user} {self.recipe}"
+
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(
