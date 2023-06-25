@@ -10,9 +10,9 @@ from food.models import Subscribe
 class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
-    def get_is_subscribed(self, obj:User):
+    def get_is_subscribed(self, user):
         return Subscribe.objects.filter(
-            Q(user=obj) & Q(subscription = self.context['request'].user)
+            Q(user=user) & Q(subscription = self.context['request'].user.id)
         ).exists()
 
     class Meta:

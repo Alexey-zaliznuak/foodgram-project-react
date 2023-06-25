@@ -15,16 +15,16 @@ from food.models import (
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'measurement_unit', 'pk')
-    list_filter = ('name', 'measurement_unit')
+    list_display = ('name', 'measurement_unit',)
+    list_filter = ('name', 'measurement_unit',)
     search_fields = ('name',)
 
 
 @admin.register(IngredientAmount)
 class IngredientAmountAdmin(admin.ModelAdmin):
     list_display = ('ingredient', 'amount',)
-    list_filter = ('ingredient', 'amount')
-    search_fields = ('ingredient', 'amount')
+    list_filter = ('ingredient', 'amount',)
+    search_fields = ('ingredient', 'amount',)
 
 
 @admin.register(Tag)

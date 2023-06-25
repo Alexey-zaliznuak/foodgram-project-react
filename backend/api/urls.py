@@ -12,13 +12,16 @@ from api.views import(
    TagViewSet,
    FavoriteViewSet,
    ShoppingCartViewSet,
+   RecipeViewSet,
 )
 
 router = Router()
-router.register('ingredients', IngredientViewSet, basename='ingredients')
 router.register('tags', TagViewSet, basename='tags')
+router.register('recipes', ShoppingCartViewSet, basename='shoppingcarts')
+router.register('recipes', RecipeViewSet, basename='recipes')
 router.register('recipes', FavoriteViewSet, basename='favorites')
-router.register('recipes', ShoppingCartViewSet, basename='favorites')
+router.register('ingredients', IngredientViewSet, basename='ingredients')
+
 
 urlpatterns = [
    path('', include(router.urls)),
@@ -30,7 +33,7 @@ schema_view = get_schema_view(
    openapi.Info(
       title="Foodgram API",
       default_version='v1',
-      description="Документация",
+      description="Documentation",
       # terms_of_service="URL страницы с пользовательским соглашением",
       contact=openapi.Contact(email="zaliznuak50@gmail.com"),
       license=openapi.License(name="BSD License"),

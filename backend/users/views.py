@@ -8,7 +8,7 @@ from .serializers import (
 )
 from rest_framework.decorators import action
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework import status
@@ -42,6 +42,12 @@ class UserViewSet(UserMixin):
 
         return UserSerializer # has 'is_subscribed' field
 
+    def get_permissions(self):
+        if self.action == 'create':
+            return (AllowAny(),)
+
+        return super().get_permissions()
+
     @action(
         methods=['PATCH', 'GET'],
         detail=False,
@@ -62,7 +68,7 @@ class UserViewSet(UserMixin):
         user = self.request.user
         serializer = ChangePasswordSerializer(data=request.data)
 
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             # Check old password
             if not user.check_password(serializer.data.get("current_password")):
                 return Response(
@@ -73,13 +79,5 @@ class UserViewSet(UserMixin):
             # set_password also hashes the password that the user will get
             user.set_password(serializer.data.get("new_password"))
             user.save()
-            response = {
-                'status': 'success',
-                'code': status.HTTP_200_OK,
-                'message': 'Password updated successfully',
-                'data': []
-            }
 
-            return Response(response)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_200_OK)

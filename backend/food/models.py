@@ -5,7 +5,10 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 
 
-# for load default data use python manage.py loadingredients
+WEEK = 60 * 24 * 7
+
+
+# for load default data use python manage.py load -i -t (tags, ingredients)
 class Ingredient(models.Model):
     # Name is not primary key because ingredient may have a duplicate
     # with another measurement unit.
@@ -67,9 +70,16 @@ class Recipe(models.Model):
         upload_to='recipes/',
     )
     text = models.TextField('description')
-    ingredients = models.ManyToManyField(IngredientAmount)
+
+    ingredients = models.ManyToManyField(IngredientAmount, verbose_name='ingredients')
+
     tags = models.ManyToManyField(Tag, verbose_name="tags")
-    cooking_time = models.PositiveSmallIntegerField("cooking time(minute)")
+    cooking_time = models.PositiveSmallIntegerField("cooking time(minute)",
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(WEEK)
+        ]
+    )
 
     created = models.DateTimeField(
         "publication date",
@@ -105,10 +115,10 @@ class Subscribe(models.Model):
 
 class Favorite(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="favorites"
+        User, on_delete=models.CASCADE, related_name="favorite_recipes"
     )
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name="is_favorite"
+        Recipe, on_delete=models.CASCADE, related_name="in_users_favorites"
     )
 
     class Meta:

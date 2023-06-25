@@ -1,6 +1,7 @@
 from rest_framework.pagination import LimitOffsetPagination
 from users.views import StandardResultsSetPagination
 from django.http import FileResponse
+from api.filters import FilterRecipe
 from core import make_shopping_file
 from rest_framework.decorators import action
 from rest_framework.status import (
@@ -31,36 +32,34 @@ from .permissions import (
     IsAuthorOrReadOnlyPermission,
 )
 from .mixins_viewsets import (
-    GetViewSet,
+    # GetViewSet,
     ListCreateDeleteViewSet,
     CreateDestroyViewSet,
 )
 from .serializers import (
     # SubscribeSerializer,
     TagSerializer,
+    RecipeSerializer,
+    GetRecipeSerializer,
     IngredientSerializer,
     CreateShoppingCartRecipeSerializer,
     CreateFavoriteRecipeSerializer,
 )
 
 
-class IngredientViewSet(GetViewSet):
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ('^name',)
 
-    serializer_class = IngredientSerializer
 
-
-class TagViewSet(GetViewSet):
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     lookup_field = 'id'
     serializer_class = TagSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ('^name',)
-
-    serializer_class = TagSerializer
 
 
 class FavoriteViewSet(viewsets.ViewSet):
@@ -106,10 +105,33 @@ class ShoppingCartViewSet(viewsets.ViewSet):
         recipe.delete()
         return Response(data=request.data, status=HTTP_204_NO_CONTENT)
 
-    @action(["get"], url_path='download_shopping_cart', detail=False)
-    def download(self, request):
+    @action(
+        ["get"],
+        url_path='download_shopping_cart',
+        url_name='download_shopping_cart',
+        detail=False,
+        permission_classes=(IsAuthenticated,)
+    )
+    def download_shopping_cart(self, request):
+        # Return txt file with list of needs ingredients
         cart = ShoppingCart.objects.filter(user=request.user)
         return FileResponse(make_shopping_file(cart))
+
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    filter_set_class = FilterRecipe
+    http_method_names = ["get", 'post', 'patch', 'delete']
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return GetRecipeSerializer
+
+        return RecipeSerializer
+
 
 # class SubscribeViewSet(ListCreateDeleteViewSet):
 #     serializer_class = SubscribeSerializer
