@@ -16,4 +16,4 @@ class User(AbstractUser):
             raise ValidationError('uncorrect username')
 
     def __str__(self) -> str:
-        return self.email + " " + self.username
+        return self.email + " " + self.username + " " + str(self.pk)

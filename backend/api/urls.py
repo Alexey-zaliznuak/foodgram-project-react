@@ -1,5 +1,12 @@
-from api.views import (FavoriteViewSet, IngredientViewSet, RecipeViewSet,
-                       ShoppingCartViewSet, TagViewSet)
+from api.views import (
+    TagViewSet,
+    RecipeViewSet,
+    FavoriteViewSet,
+    SubscribeViewSet,
+    GetSubscriptions,
+    IngredientViewSet,
+    ShoppingCartViewSet,
+)
 from django.conf.urls import url
 from django.urls import include, path
 from drf_yasg import openapi
@@ -13,6 +20,10 @@ router.register('recipes', ShoppingCartViewSet, basename='shoppingcarts')
 router.register('recipes', RecipeViewSet, basename='recipes')
 router.register('recipes', FavoriteViewSet, basename='favorites')
 router.register('ingredients', IngredientViewSet, basename='ingredients')
+router.register('users', SubscribeViewSet, basename='subscribes')
+router.register(
+    'users/subscriptions', GetSubscriptions, basename='subscriptions'
+)
 
 
 urlpatterns = [

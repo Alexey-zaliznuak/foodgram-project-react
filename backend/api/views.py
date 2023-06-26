@@ -1,13 +1,15 @@
 from api.filters import FilterRecipe
+from users.models import User
 from core import make_shopping_file
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from food.models import (
-    Favorite,
-    Ingredient,
+    Tag,
     Recipe,
+    Favorite,
+    Subscribe,
+    Ingredient,
     ShoppingCart,
-    Tag
 )
 from rest_framework import filters, viewsets
 from rest_framework.decorators import action
@@ -19,7 +21,9 @@ from .serializers import (
     TagSerializer,
     RecipeSerializer,
     GetRecipeSerializer,
+    SubscribeSerializer,
     IngredientSerializer,
+    UserGetSubscribeSerializer,
     CreateFavoriteRecipeSerializer,
     CreateShoppingCartRecipeSerializer,
 )
@@ -111,14 +115,42 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeSerializer
 
 
-# class SubscribeViewSet(ListCreateDeleteViewSet):
-#     serializer_class = SubscribeSerializer
-#     permission_classes = (IsAuthenticated,)
-#     filter_backends = (filters.SearchFilter, )
-#     search_fields = ('user__username', 'following__username')
+class GetSubscriptions(
+    viewsets.mixins.ListModelMixin, viewsets.GenericViewSet
+):
+    permission_classes = (IsAuthenticated,)
+    filter_backends = (filters.SearchFilter,)
+    serializer_class = UserGetSubscribeSerializer
 
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
+    def get_queryset(self):
+        user = self.request.user
+        new_queryset = [sub.subscription for sub in user.subscribe_on.all()]
+        return new_queryset
 
-#     def get_queryset(self):
-#         return Subscribe.objects.filter(user=self.request.user)
+
+class SubscribeViewSet(viewsets.ViewSet):
+    @action(["post", "delete"], detail=True, url_path='subscribe')
+    def subscribe(self, request, pk):
+        user = request.user
+        sub = get_object_or_404(User, id=pk)
+
+        if request.method == "POST":
+
+            serializer = SubscribeSerializer(
+                sub, data=request.data, context={'request': request}
+            )
+            serializer.is_valid(raise_exception=True)
+
+            Subscribe.objects.create(user=user, subscription=sub)
+            response_data = UserGetSubscribeSerializer(
+                sub,
+                context={'request': request}
+            ).to_representation(sub)
+            return Response(
+                data=response_data, status=HTTP_201_CREATED
+            )
+
+        # delete subscribe
+        sub = get_object_or_404(Subscribe, user=user, subscription=sub)
+        sub.delete()
+        return Response(data=request.data, status=HTTP_204_NO_CONTENT)

@@ -1,14 +1,16 @@
 import base64
 
+from users.models import User
 from django.core.files.base import ContentFile
 from django.db.models import Q
 from food.models import (
-    Favorite,
-    Ingredient,
-    IngredientAmount,
-    Recipe,
-    ShoppingCart,
     Tag,
+    Recipe,
+    Favorite,
+    Subscribe,
+    Ingredient,
+    ShoppingCart,
+    IngredientAmount,
 )
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -135,10 +137,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         instance.save()
 
-        # Note that many-to-many fields are set after updating instance.
-        # Setting m2m fields triggers signals which could potentially change
-        # updated instance and we do not want it to collide with .update()
-
         for attr, value in m2m_fields:
             field = getattr(instance, attr)
 
@@ -210,26 +208,74 @@ class GetRecipeSerializer(RecipeSerializer):
         ).exists()
 
 
-# class SubscribeSerializer(serializers.ModelSerializer):
-#     subscribers = serializers.SlugRelatedField(
-#     #     slug_field='username',
-#     #     queryset=User.objects.all(),
-#     # )
+class SubscribeRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
 
-#     def validate_following(self, value):
-#         if self.context["request"].user == value:
-#             raise serializers.ValidationError(
-#                 'You are trying to subscribe to yourself.'
-#                 '(you set yourself in "following")'
-#             )
-#         return value
 
-#     class Meta:
-#         fields = '__all__'
-#         model = Subscribe
-#         validators = [
-#             validators.UniqueTogetherValidator(
-#                 queryset=Follow.objects.all(),
-#                 fields=('user', 'following')
-#             )
-#         ]
+class UserGetSubscribeSerializer(serializers.ModelSerializer):
+    recipes = serializers.SerializerMethodField(read_only=True)
+    recipes_count = serializers.SerializerMethodField(read_only=True)
+    is_subscribed = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+            'recipes',
+            'recipes_count',
+        )
+
+    def get_is_subscribed(self, user):
+        return Subscribe.objects.filter(
+            Q(subscription=user) & Q(user=self.context['request'].user.id)
+        ).exists()
+
+    def get_recipes(self, user):
+        request = self.context.get('request')
+        recipes_limit = request.query_params.get('recipes_limit')
+
+        recipes = user.recipes.all()
+        if recipes_limit:
+            recipes = recipes[:int(recipes_limit)]
+
+        context = {'request': request}
+        return SubscribeRecipeSerializer(
+            recipes, many=True,
+            context=context
+        ).data
+
+    def get_recipes_count(self, user):
+        return user.recipes.count()
+
+
+class SubscribeSerializer(serializers.ModelSerializer):
+    def validate(self, data):
+        print(data, flush=True)
+        user = self.context['request'].user
+        sub = self.instance
+
+        if user == sub:
+            raise ValidationError("You can`t subscribe on yourself")
+
+        if Subscribe.objects.filter(
+            Q(user=user) & Q(subscription=sub)
+        ).exists():
+            raise ValidationError("You already subscribe on this user")
+
+        return data
+
+    class Meta:
+        model = Subscribe
+        fields = (
+            'id',
+            'user',
+            'subscription',
+        )
+        read_only_fields = ('user', 'subscription',)
