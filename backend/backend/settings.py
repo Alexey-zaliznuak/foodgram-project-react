@@ -7,7 +7,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY', 'django-insecure-Django_secret_key_Django_secret_key_Django_secret')
 
 DEBUG = env('DEBUG') == 'True'
 
@@ -78,13 +78,15 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 # Use sql in debug mode and postgers in production(on server)
+
+DATABASE = env("DATABASE", 'SQLITE')
 DATABASES = {
     'default': {
-        'debug': {
+        'SQLITE': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         },
-        'production': {
+        'POSTGRES': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': env('POSTGRES_DB', 'django'),
             'USER': env('POSTGRES_USER', 'django'),
@@ -92,7 +94,7 @@ DATABASES = {
             'HOST': env('POSTGRES_HOST', ''),
             'PORT': env('POSTGRES_PORT', 5432)
         }
-    }['debug' if DEBUG else 'production']
+    }[DATABASE]
 }
 
 

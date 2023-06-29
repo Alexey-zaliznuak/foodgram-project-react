@@ -257,7 +257,6 @@ class UserGetSubscribeSerializer(serializers.ModelSerializer):
 
 class SubscribeSerializer(serializers.ModelSerializer):
     def validate(self, data):
-        print(data, flush=True)
         user = self.context['request'].user
         sub = self.instance
 

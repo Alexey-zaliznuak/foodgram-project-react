@@ -23,8 +23,6 @@ class UserViewSet(UserMixin):
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter, )
     pagination_class = StandardResultsSetPagination
-
-    search_fields = ('username',)
     http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_serializer_class(self):
@@ -46,13 +44,14 @@ class UserViewSet(UserMixin):
         filter_backends=(),
         pagination_class=None,
         serializer_class=UserSerializer,
+        lookup_field='email'
     )
     def me(self, request):
-        self.kwargs.update(username=request.user.username)
+        self.kwargs.update(email=request.user.email)
         if request.method == 'PATCH':
-            return self.partial_update(request, request.user.username)
+            return self.partial_update(request, request.user.email)
 
-        return self.retrieve(request, request.user.username)
+        return self.retrieve(request, request.user.email)
 
     @action(["post"], detail=False, queryset=None)
     def set_password(self, request):

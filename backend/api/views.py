@@ -1,6 +1,6 @@
 from api.filters import FilterRecipe
 from users.models import User
-from core import make_shopping_file
+from core import make_shopping_file, StandardResultsSetPagination
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from food.models import (

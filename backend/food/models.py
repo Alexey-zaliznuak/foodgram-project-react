@@ -119,38 +119,34 @@ class Subscribe(models.Model):
             raise ValidationError('You cant subsrite on yourself')
 
 
-class Favorite(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="favorite_recipes"
-    )
+class FavoriteShoppingCartAbstart(models.Model):
+    user = models.ForeignKey(User, models.CASCADE, related_name='%(class)s')
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name="in_users_favorites"
+        Recipe, models.CASCADE, related_name='in_%(class)s'
     )
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=('user', "recipe"),
-                name="user_recipe_unique"
-            )
-        ]
+        abstract = True
 
     def __str__(self):
         return f"{self.user} {self.recipe}"
 
 
-class ShoppingCart(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="shopping_cart"
-    )
-    recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name="in_shopping_cart"
-    )
-
+class Favorite(FavoriteShoppingCartAbstart):
     class Meta:
         constraints = [
             models.UniqueConstraint(
                 fields=('user', "recipe"),
-                name="user_recipe_unique_shopping_cart"
+                name="user_recipe_%(class)s_unique"
+            )
+        ]
+
+
+class ShoppingCart(FavoriteShoppingCartAbstart):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', "recipe"),
+                name="user_recipe_%(class)s_unique"
             )
         ]

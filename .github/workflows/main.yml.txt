@@ -185,13 +185,12 @@ jobs:
           sudo docker compose -f docker-compose.production.yml down
           sudo docker compose -f docker-compose.production.yml up -d
 
-          # Make migrations, collect static and replace it in a volume folder
+          # Make migrations
           sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
-          sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
-          sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /app/backend_static/static/
 
           # load base data
-          sudo docker compose -f docker-compose.production.yml exec backend python manage.py load -t -i
+          sudo docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser --noinput
+          sudo docker compose -f docker-compose.production.yml exec backend python manage.py load -t -t
 
           # clearing
           sudo docker system prune --all --force
