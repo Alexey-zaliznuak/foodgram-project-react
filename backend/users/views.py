@@ -5,11 +5,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .models import User
-from .serializers import (
-    ChangePasswordSerializer,
-    PostUserSerializer,
-    UserSerializer
-)
+from .serializers import (ChangePasswordSerializer, PostUserSerializer,
+                          UserSerializer)
 
 
 class UserMixin(

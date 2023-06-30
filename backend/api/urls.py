@@ -1,12 +1,6 @@
-from api.views import (
-    FavoriteViewSet,
-    GetSubscriptions,
-    IngredientViewSet,
-    RecipeViewSet,
-    ShoppingCartViewSet,
-    SubscribeViewSet,
-    TagViewSet
-)
+from api.views import (FavoriteViewSet, GetSubscriptions, IngredientViewSet,
+                       RecipeViewSet, ShoppingCartViewSet, SubscribeViewSet,
+                       TagViewSet)
 from django.conf.urls import url
 from django.urls import include, path
 from drf_yasg import openapi

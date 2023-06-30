@@ -2,15 +2,8 @@ import base64
 
 from django.core.files.base import ContentFile
 from django.db.models import Q
-from food.models import (
-    Favorite,
-    Ingredient,
-    IngredientAmount,
-    Recipe,
-    ShoppingCart,
-    Subscribe,
-    Tag
-)
+from food.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                         ShoppingCart, Subscribe, Tag)
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.utils import model_meta

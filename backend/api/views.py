@@ -2,14 +2,8 @@ from api.filters import FilterRecipe
 from core import StandardResultsSetPagination, make_shopping_file
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
-from food.models import (
-    Favorite,
-    Ingredient,
-    Recipe,
-    ShoppingCart,
-    Subscribe,
-    Tag
-)
+from food.models import (Favorite, Ingredient, Recipe, ShoppingCart, Subscribe,
+                         Tag)
 from rest_framework import filters, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -18,16 +12,11 @@ from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 from users.models import User
 
 from .filters import IngredientFilter
-from .serializers import (
-    CreateFavoriteRecipeSerializer,
-    CreateShoppingCartRecipeSerializer,
-    GetRecipeSerializer,
-    IngredientSerializer,
-    RecipeSerializer,
-    SubscribeSerializer,
-    TagSerializer,
-    UserGetSubscribeSerializer
-)
+from .serializers import (CreateFavoriteRecipeSerializer,
+                          CreateShoppingCartRecipeSerializer,
+                          GetRecipeSerializer, IngredientSerializer,
+                          RecipeSerializer, SubscribeSerializer, TagSerializer,
+                          UserGetSubscribeSerializer)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
