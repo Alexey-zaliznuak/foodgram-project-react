@@ -190,7 +190,7 @@ touch .env
 cd projectpath/infra
 ```
 
-#### Update docker-compose.producrion
+#### Update docker-compose.production
 - Change docker Hub profile data
 
 #### Add secrets for CI/CD in your repository
