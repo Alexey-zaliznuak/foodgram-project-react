@@ -47,4 +47,4 @@ def get_ingredients(cart) -> list[str]:
 def make_shopping_file(cart) -> ContentFile:
     text = '\n'.join(get_ingredients(cart))
     text += '\n' + "Enjoy your lunch :)"
-    return ContentFile(text.encode(), "shopping_list_" + str(time()) + ".pdf")
+    return ContentFile(text.encode(), "shopping_list_" + str(time()) + ".txt")

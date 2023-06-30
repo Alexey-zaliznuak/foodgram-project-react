@@ -17,6 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
+from .filters import IngredientFilter
 from .serializers import (
     TagSerializer,
     RecipeSerializer,
@@ -32,7 +33,7 @@ from .serializers import (
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [IngredientFilter]
     search_fields = ('^name',)
 
 
@@ -102,7 +103,8 @@ class ShoppingCartViewSet(viewsets.ViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    filter_set_class = FilterRecipe
+    filterset_class = FilterRecipe
+    pagination_class = StandardResultsSetPagination
     http_method_names = ["get", 'post', 'patch', 'delete']
 
     def perform_create(self, serializer):
@@ -119,6 +121,7 @@ class GetSubscriptions(
     viewsets.mixins.ListModelMixin, viewsets.GenericViewSet
 ):
     permission_classes = (IsAuthenticated,)
+    pagination_class = StandardResultsSetPagination
     filter_backends = (filters.SearchFilter,)
     serializer_class = UserGetSubscribeSerializer
 
