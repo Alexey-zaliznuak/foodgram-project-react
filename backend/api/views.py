@@ -1,5 +1,6 @@
 from api.filters import FilterRecipe
-from core import StandardResultsSetPagination, make_shopping_file
+from core.make_shopping_file import make_shopping_file
+from core.pagination import StandardResultsSetPagination
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from food.models import (Favorite, Ingredient, Recipe, ShoppingCart, Subscribe,

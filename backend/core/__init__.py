@@ -1,2 +1,0 @@
-from core.make_shopping_file import make_shopping_file
-from core.pagination import StandardResultsSetPagination

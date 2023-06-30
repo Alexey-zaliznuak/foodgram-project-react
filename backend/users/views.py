@@ -1,4 +1,4 @@
-from core import StandardResultsSetPagination
+from core.pagination import StandardResultsSetPagination
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
