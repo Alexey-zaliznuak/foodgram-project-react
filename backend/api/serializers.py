@@ -77,7 +77,7 @@ class CreateShoppingCartRecipeSerializer(serializers.ModelSerializer):
 
 
 class IngredientAmountSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
+    id = serializers.IntegerField(source='ingredient.id')
     name = serializers.CharField(source='ingredient.name')
     amount = serializers.IntegerField(min_value=1)
     measurement_unit = serializers.CharField(
@@ -156,7 +156,6 @@ class RecipeSerializer(serializers.ModelSerializer):
                 ingredient=ingredient.get("ingredient"),
                 amount=ingredient.get("amount")
             )
-
         return ingredients
 
     class Meta:
