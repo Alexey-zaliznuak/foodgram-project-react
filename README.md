@@ -215,7 +215,7 @@ cd foodgram
 ```
 scp -i C:\\path\\to\\openssh\\private\\key\\file docker-compose.production.yml
 USERNAME@ServerIP:/home/USERNAME/foodgram/docker-compose.production.yml
-scp -i C:\\path\\to\\openssh\\private\\key\\file .env
+scp -i C:\\path\\to\\openssh\\private\\key\\file ../.env
 USERNAME@ServerIP:/home/USERNAME/foodgram/.env
 ```
 
