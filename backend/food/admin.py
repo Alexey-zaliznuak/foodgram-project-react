@@ -40,13 +40,15 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'author_link',
-        'image',
+        'image_link',
+        'in_favorites',
         'ingredients_list',
         'tags_list',
         'cooking_time',
         'created',
     )
-    search_fields = ('name',)
+    search_fields = ('name', 'author__username',)
+    list_filter = ('tags', )
 
     @admin.display(description="author")
     def author_link(self, obj):
@@ -58,12 +60,17 @@ class RecipeAdmin(admin.ModelAdmin):
             f'<a target="_blank" href={url}>{obj.author}</a>'
         )
 
+    @admin.display(description="image_link")
+    def image_link(self, obj):
+        return mark_safe(
+            f'<a target="_blank" href=/media/{obj.image}>link</a>'
+        )
+
     @admin.display(description="ingredients")
     def ingredients_list(self, obj):
         res = ', '.join(
             [str(ingredient) for ingredient in obj.ingredients.all()]
         )
-
         return res
 
     @admin.display(description="tags")
@@ -73,6 +80,10 @@ class RecipeAdmin(admin.ModelAdmin):
         )
 
         return res
+
+    @admin.display(description="in_favorites")
+    def in_favorites(self, obj):
+        return obj.in_favorite.all().count()
 
 
 @admin.register(Subscribe)
