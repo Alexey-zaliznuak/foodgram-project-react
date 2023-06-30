@@ -79,7 +79,7 @@ CORS_ORIGIN_WHITELIST = [
 
 # Use sql in debug mode and postgers in production(on server)
 
-DATABASE = env("DATABASE", 'SQLITE')
+DATABASE = env("DATABASE", 'POSTGRES')
 DATABASES = {
     'default': {
         'SQLITE': {
