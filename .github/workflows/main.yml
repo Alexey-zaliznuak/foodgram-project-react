@@ -123,7 +123,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         source: "./infra/*"
-        target: "foodgram"
+        target: "foodgram/"
 
     - name: Executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master
@@ -133,7 +133,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
-          cd foodgram
+          cd foodgram/infra
 
           # Pull images
           sudo docker compose -f docker-compose.production.yml pull
