@@ -1,20 +1,20 @@
 import base64
 
-from users.models import User
 from django.core.files.base import ContentFile
 from django.db.models import Q
 from food.models import (
-    Tag,
-    Recipe,
     Favorite,
-    Subscribe,
     Ingredient,
-    ShoppingCart,
     IngredientAmount,
+    Recipe,
+    ShoppingCart,
+    Subscribe,
+    Tag
 )
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.utils import model_meta
+from users.models import User
 from users.serializers import UserSerializer
 
 WEEK = 60 * 24 * 7  # cooking_time for only the longest recipes

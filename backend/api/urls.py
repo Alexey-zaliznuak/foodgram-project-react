@@ -1,11 +1,11 @@
 from api.views import (
-    TagViewSet,
-    RecipeViewSet,
     FavoriteViewSet,
-    SubscribeViewSet,
     GetSubscriptions,
     IngredientViewSet,
+    RecipeViewSet,
     ShoppingCartViewSet,
+    SubscribeViewSet,
+    TagViewSet
 )
 from django.conf.urls import url
 from django.urls import include, path

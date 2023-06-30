@@ -1,12 +1,11 @@
-from rest_framework import filters
 from django_filters import (
-    BooleanFilter,
     FilterSet,
     ModelChoiceFilter,
-    NumberFilter,
-    ModelMultipleChoiceFilter
+    ModelMultipleChoiceFilter,
+    NumberFilter
 )
 from food.models import Recipe, Tag
+from rest_framework import filters
 from users.models import User
 
 
@@ -18,7 +17,9 @@ class FilterRecipe(FilterSet):
         queryset=Tag.objects.all(),
     )
     is_favorited = NumberFilter(max_value=1, method='filter_is_favorited')
-    is_in_shopping_cart = NumberFilter(max_value=1, method='filter_is_in_shopping_cart')
+    is_in_shopping_cart = NumberFilter(
+        max_value=1, method='filter_is_in_shopping_cart'
+    )
 
     def filter_is_favorited(self, queryset, field_name, value):
         print("test", flush=True)
