@@ -210,11 +210,9 @@ mkdir foodgram
 cd foodgram
 ```
 
-#### Copy docker compose and .env files
+#### Copy .env file on server
 
 ```
-scp -i C:\\path\\to\\openssh\\private\\key\\file docker-compose.production.yml
-USERNAME@ServerIP:/home/USERNAME/foodgram/docker-compose.production.yml
 scp -i C:\\path\\to\\openssh\\private\\key\\file ../.env
 USERNAME@ServerIP:/home/USERNAME/foodgram/.env
 ```
