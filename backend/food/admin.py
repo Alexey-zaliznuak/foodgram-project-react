@@ -2,8 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from food.models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                         ShoppingCart, Subscribe, Tag)
+
+from .models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                     ShoppingCart, Subscribe, Tag)
 
 
 @admin.register(Ingredient)

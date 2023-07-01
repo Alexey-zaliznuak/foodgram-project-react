@@ -1,18 +1,20 @@
-from api.filters import FilterRecipe
-from core.make_shopping_file import make_shopping_file
-from core.pagination import StandardResultsSetPagination
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
-from food.models import (Favorite, Ingredient, Recipe, ShoppingCart, Subscribe,
-                         Tag)
 from rest_framework import filters, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
+
+from core.make_shopping_file import make_shopping_file
+from core.pagination import StandardResultsSetPagination
+from food.models import (Favorite, Ingredient, Recipe, ShoppingCart, Subscribe,
+                         Tag)
 from users.models import User
 
-from .filters import IngredientFilter
+from .filters import FilterRecipe, IngredientFilter
+from .permissions import IsAuthorOrReadOnly
 from .serializers import (CreateFavoriteRecipeSerializer,
                           CreateShoppingCartRecipeSerializer,
                           GetRecipeSerializer, IngredientSerializer,
@@ -36,7 +38,12 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class FavoriteViewSet(viewsets.ViewSet):
-    @action(["post", "delete"], detail=True, url_path='favorite')
+    @action(
+        ["post", "delete"],
+        detail=True,
+        url_path='favorite',
+        permission_classes=(IsAuthenticated,)
+    )
     def favorite(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
@@ -58,7 +65,12 @@ class FavoriteViewSet(viewsets.ViewSet):
 
 
 class ShoppingCartViewSet(viewsets.ViewSet):
-    @action(["post", "delete"], detail=True, url_path='shopping_cart')
+    @action(
+        ["post", "delete"],
+        True,
+        url_path='shopping_cart',
+        permission_classes=(IsAuthenticated,)
+    )
     def shopping(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
@@ -94,6 +106,7 @@ class ShoppingCartViewSet(viewsets.ViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     filterset_class = FilterRecipe
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly,)
     pagination_class = StandardResultsSetPagination
     http_method_names = ["get", 'post', 'patch', 'delete']
 
@@ -118,6 +131,7 @@ class GetSubscriptions(
     def get_queryset(self):
         user = self.request.user
         new_queryset = [sub.subscription for sub in user.subscribe_on.all()]
+        print(new_queryset, new_queryset[0].recipes_count)
         return new_queryset
 
 

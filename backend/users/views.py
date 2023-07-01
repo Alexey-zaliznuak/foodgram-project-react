@@ -1,8 +1,9 @@
-from core.pagination import StandardResultsSetPagination
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+
+from core.pagination import StandardResultsSetPagination
 
 from .models import User
 from .serializers import (ChangePasswordSerializer, PostUserSerializer,

@@ -11,14 +11,10 @@ SECRET_KEY = env('SECRET_KEY', 'django-insecure-Django_secret_key_Django_secret_
 
 DEBUG = env('DEBUG') == 'True'
 
-IP = env('IP')
-URL = env('URL')
-
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-if IP:
-    ALLOWED_HOSTS.append(IP)
-if URL:
-    ALLOWED_HOSTS.append(URL)
+
+ALLOWED_HOSTS.append(env('IP'))
+ALLOWED_HOSTS.append(env('URL'))
 
 
 # Application definition

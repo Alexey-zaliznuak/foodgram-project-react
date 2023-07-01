@@ -2,11 +2,12 @@ import base64
 
 from django.core.files.base import ContentFile
 from django.db.models import Q
-from food.models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                         ShoppingCart, Subscribe, Tag)
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.utils import model_meta
+
+from food.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                         ShoppingCart, Subscribe, Tag)
 from users.models import User
 from users.serializers import UserSerializer
 
@@ -103,6 +104,20 @@ class RecipeSerializer(serializers.ModelSerializer):
     text = serializers.CharField()
     cooking_time = serializers.IntegerField(min_value=1, max_value=WEEK)
 
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'tags',
+            'author',
+            'ingredients',
+            'name',
+            'image',
+            'text',
+            'cooking_time',
+        )
+        read_only_fields = ('id', 'author')
+
     def create(self, validated_data):
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
@@ -150,20 +165,6 @@ class RecipeSerializer(serializers.ModelSerializer):
                 amount=ingredient.get("amount")
             )
         return ingredients
-
-    class Meta:
-        model = Recipe
-        fields = (
-            'id',
-            'tags',
-            'author',
-            'ingredients',
-            'name',
-            'image',
-            'text',
-            'cooking_time',
-        )
-        read_only_fields = ('id', 'author')
 
 
 class GetRecipeSerializer(RecipeSerializer):

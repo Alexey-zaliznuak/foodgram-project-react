@@ -1,12 +1,13 @@
-from api.views import (FavoriteViewSet, GetSubscriptions, IngredientViewSet,
-                       RecipeViewSet, ShoppingCartViewSet, SubscribeViewSet,
-                       TagViewSet)
 from django.conf.urls import url
 from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter as Router
+
+from api.views import (FavoriteViewSet, GetSubscriptions, IngredientViewSet,
+                       RecipeViewSet, ShoppingCartViewSet, SubscribeViewSet,
+                       TagViewSet)
 
 router = Router()
 router.register('tags', TagViewSet, basename='tags')
@@ -31,7 +32,6 @@ schema_view = get_schema_view(
         title="Foodgram API",
         default_version='v1',
         description="Documentation",
-        # terms_of_service="URL страницы с пользовательским соглашением",
         contact=openapi.Contact(email="zaliznuak50@gmail.com"),
         license=openapi.License(name="BSD License"),
     ),
