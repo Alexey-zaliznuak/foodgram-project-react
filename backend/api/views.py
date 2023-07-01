@@ -131,7 +131,6 @@ class GetSubscriptions(
     def get_queryset(self):
         user = self.request.user
         new_queryset = [sub.subscription for sub in user.subscribe_on.all()]
-        print(new_queryset, new_queryset[0].recipes_count)
         return new_queryset
 
 

@@ -1,3 +1,5 @@
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.password_validation import validate_password
 from django.db.models import Q
 from rest_framework import serializers
 
@@ -27,12 +29,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class PostUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(required=True)
+
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = super().create(validated_data)
         user.set_password(password)
         user.save()
         return user
+
+    def validate_password(self, value):
+        validate_password(value)
+
+        return value
 
     class Meta:
         model = User
