@@ -1,3 +1,4 @@
+from django.db import models
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, viewsets
@@ -130,8 +131,15 @@ class GetSubscriptions(
 
     def get_queryset(self):
         user = self.request.user
-        new_queryset = [sub.subscription for sub in user.subscribe_on.all()]
-        return new_queryset
+
+        subscription_users = User.objects.filter(
+            subscribers__user=user
+        ).annotate(recipes_count=models.Count('recipes'))
+
+        return subscription_users
+
+    class Meta:
+        ordering = ['-id']
 
 
 class SubscribeViewSet(viewsets.ViewSet):

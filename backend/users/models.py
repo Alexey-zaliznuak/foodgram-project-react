@@ -20,7 +20,7 @@ class User(AbstractUser):
             raise ValidationError('uncorrect username')
 
     class Meta:
-        ordering = ("username",)
+        ordering = ["-id"]
         verbose_name = 'User'
         verbose_name_plural = "Users"
 

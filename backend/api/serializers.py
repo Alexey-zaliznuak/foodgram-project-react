@@ -209,7 +209,7 @@ class SubscribeRecipeSerializer(serializers.ModelSerializer):
 
 class UserGetSubscribeSerializer(serializers.ModelSerializer):
     recipes = serializers.SerializerMethodField(read_only=True)
-    recipes_count = serializers.SerializerMethodField(read_only=True)
+    recipes_count = serializers.ReadOnlyField()
     is_subscribed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -243,9 +243,6 @@ class UserGetSubscribeSerializer(serializers.ModelSerializer):
             recipes, many=True,
             context=context
         ).data
-
-    def get_recipes_count(self, user):
-        return user.recipes.count()
 
 
 class SubscribeSerializer(serializers.ModelSerializer):
