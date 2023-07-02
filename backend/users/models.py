@@ -1,14 +1,15 @@
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from models_config import USER_EMAIL_MAX_LENGTH
-
 
 class User(AbstractUser):
     email = models.EmailField(
-        _('email address'), max_length=USER_EMAIL_MAX_LENGTH, unique=True
+        _('email address'),
+        max_length=settings.USER_EMAIL_MAX_LENGTH,
+        unique=True
     )
 
     # https://code.djangoproject.com/ticket/20097

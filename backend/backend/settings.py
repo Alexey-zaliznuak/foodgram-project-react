@@ -11,11 +11,7 @@ SECRET_KEY = env('SECRET_KEY', 'django-insecure-Django_secret_key_Django_secret_
 
 DEBUG = env('DEBUG') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
-ALLOWED_HOSTS.append(env('IP'))
-ALLOWED_HOSTS.append(env('URL'))
-
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', '127.0.0.1:8000,localhost').split(',')
 
 # Application definition
 
@@ -95,6 +91,17 @@ DATABASES = {
 
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 3000
+
+# models settings
+USER_EMAIL_MAX_LENGTH = 250
+
+MAX_COOKING_TIME = 60 * 24 * 7
+
+INGREDIENT_NAME_MAX_LENGTH = 64
+INGREDIENT_MEASUREMENT_UNIT_MAX_LENGTH = 32
+
+TAG_NAME_MAX_LENGTH = 32
+RECIPE_NAME_MAX_LENGTH = 200
 
 
 REST_FRAMEWORK = {

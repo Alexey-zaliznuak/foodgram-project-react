@@ -1,11 +1,9 @@
 from colorfield.fields import ColorField
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from models_config import (INGREDIENT_MEASUREMENT_UNIT_MAX_LENGTH,
-                           INGREDIENT_NAME_MAX_LENGTH, MAX_COOKING_TIME,
-                           RECIPE_NAME_MAX_LENGTH, TAG_NAME_MAX_LENGTH)
 from users.models import User
 
 
@@ -14,10 +12,12 @@ class Ingredient(models.Model):
     # Name is not primary key because ingredient may have a duplicate
     # with another measurement unit.
     name = models.CharField(
-        'Ingredient name', max_length=INGREDIENT_NAME_MAX_LENGTH
+        'Ingredient name',
+        max_length=settings.INGREDIENT_NAME_MAX_LENGTH
     )
     measurement_unit = models.CharField(
-        'Measurement unit', max_length=INGREDIENT_MEASUREMENT_UNIT_MAX_LENGTH
+        'Measurement unit',
+        max_length=settings.INGREDIENT_MEASUREMENT_UNIT_MAX_LENGTH
     )
 
     class Meta:
@@ -57,7 +57,7 @@ class IngredientAmount(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(
-        'Tag for Recipes', max_length=TAG_NAME_MAX_LENGTH
+        'Tag for Recipes', max_length=settings.TAG_NAME_MAX_LENGTH
     )
     color = ColorField('color', default='#FF0000')
     slug = models.SlugField("Slug", unique=True)
@@ -73,7 +73,9 @@ class Recipe(models.Model):
         related_name='recipes',
         verbose_name="author",
     )
-    name = models.CharField("recipe name", max_length=RECIPE_NAME_MAX_LENGTH)
+    name = models.CharField(
+        "recipe name", max_length=settings.RECIPE_NAME_MAX_LENGTH
+    )
     image = models.ImageField(
         'image',
         upload_to='recipes/',
@@ -89,7 +91,7 @@ class Recipe(models.Model):
         "cooking time(minute)",
         validators=[
             MinValueValidator(1),
-            MaxValueValidator(MAX_COOKING_TIME)
+            MaxValueValidator(settings.MAX_COOKING_TIME)
         ]
     )
 

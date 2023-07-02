@@ -30,9 +30,7 @@ variables to your .env file. See template in .env.dist file.
 
 `DEBUG` (default - 'True')
 
-`IP` (your server IP), not required
-
-`URL` (your server URl), not required
+`ALLOWED_HOSTS` (default - '127.0.0.1:8000,localhost')
 
 `TIME_ZONE` (default - 'UTC')
 
