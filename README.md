@@ -3,6 +3,10 @@ Service for publishing and sharing recipes
 Here you can subscribe to your favorite authors and save your favorite recipes,
 and before going to the store - download a list of products needed for the present.
 
+URL: https://foodgram-project.servehttp.com/
+ADMIN_EMAIL: root10@gmail.com
+ADMIN_PASSWORD: root
+
 ## Technology stack
 ![Django-app workflow](https://github.com/Alexey-zaliznuak/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 [![Python](https://img.shields.io/badge/-Python-464646?style=flat&logo=Python&logoColor=56C0C0&color=008080)](https://www.python.org/)
